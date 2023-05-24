@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, ImageBackground } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, ImageBackground, KeyboardAvoidingView, Platform } from 'react-native';
 
 
 
 const Start = ({ navigation }) => {
-  const [name, setName] = useState('');
+const [name, setName] = useState('');
 
   //State variable selectedColor using the useState hook. It will hold the selected background color
   const [selectedColor, setSelectedColor] = useState('');
@@ -15,11 +15,6 @@ const Start = ({ navigation }) => {
     navigation.setOptions({ headerStyle: { backgroundColor: color } }); // Change navigation bar color
   };
 
-  
-
-
-
-
   return (
    
   
@@ -27,7 +22,7 @@ const Start = ({ navigation }) => {
     <View style={styles.container}>
 
 
-     <ImageBackground source={require('/Users/fabian/Desktop/Portfolio/chat-app/A5-chatapp-assets/Background_Image.png')} style={styles.backgroundimage }/>
+     <ImageBackground source={require('../assets/BackgroundImage.png')} style={styles.backgroundimage }/>
     
       <View style={styles.box1}>
       <Text style={styles.title} >Fabis Chat App</Text>
@@ -75,7 +70,8 @@ const Start = ({ navigation }) => {
           <Text style={styles.text1}>Start Chatting</Text>
         </TouchableOpacity>
         </View>
-     
+        {Platform.OS === "ios"?<KeyboardAvoidingView behavior="padding" />: null}
+
       </View>
 
       
@@ -129,29 +125,27 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginLeft: '11%',
     marginRight: '11%',
-    justifyContent: "space-around"
+
   } ,
 
   colorchoose1: {
     flex: 1,
     backgroundColor: '#090C08', 
-    borderRadius: '95%',
+    borderRadius: 50/2,
     height: 50,
     width: '25%',
-    marginRight: '2%',
-    marginLeft: '2%',
+    margin: '2%',,
 
   },
 
   colorchoose2: {
     flex: 1,
     backgroundColor: '#474056',
-    borderStyle: 'double',
-    borderRadius: '70%',
+    borderRadius: 50/2,
     height: 50,
     width: '25%',
-    marginRight: '2%',
-    marginLeft: '2%',
+    margin: '2%',
+
 
   },
 
@@ -159,30 +153,23 @@ const styles = StyleSheet.create({
   colorchoose3: {
     flex: 1,
     backgroundColor: '#8A95A5',
-    borderStyle: 'double',
-    borderRadius: '70%',
+    borderRadius: 50/2,
     height: 50,
     width: '25%',
-    marginRight: '2%',
-    marginLeft: '2%',
+    margin: '2%',
+   
   },
 
   colorchoose4: {
     flex: 1,
     backgroundColor: '#B9C6AE', 
-    borderStyle: 'double',
-    borderRadius: 50,
+    borderRadius: 50/2,
     height: 50,
     width: 10,
-    marginLeft: '2%%',
-    position: 'relative',
+   
     
   },
 
-  box3: {
-    flex: 1,
-    backgroundColor: 'green'
-  },
 
   textInput: {
     borderWidth: 2,
@@ -190,10 +177,10 @@ const styles = StyleSheet.create({
     marginLeft: '11%',
     marginRight: '11%', 
     borderColor: '#757083',
-    backgroundColor: '#FFFFFF',
     height: '15%',
     fontSize: 16 ,
     textAlign: 'center',
+    opacity: 0.5, 
   },
 
   confirmationbutton: {
@@ -203,7 +190,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF', 
     flex: 1,
     margin: '11%',
-    height: 20,
+    height: 10,
     fontColor: '#FFFFFF',
     justifyContent: 'center',
   },
@@ -215,12 +202,11 @@ color: '#FFFFFF',
   },
 
   text2: {
-    fontSize: 25,
+    fontSize: 16,
     textAlign: 'center',
     color: '#757083',
     fontWeight: '300',
- 
-
+    opacity: 1,
       },
 
       title: {
