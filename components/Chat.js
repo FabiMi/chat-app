@@ -9,12 +9,14 @@ const Chat = ({ route, navigation }) => {
   useEffect(() => {
     navigation.setOptions({
       title: name,
-      headerStyle: { backgroundColor: color }
+      headerStyle: { backgroundColor: color },
+      headerTintColor: bubbleColor,
+      justifyContent: 'center'
     });
     setMessages([
       {
         _id: 1,
-        text: 'Hello developer',
+        text: `Hello ${name}! Welcome to my chat app!`,
         createdAt: new Date(),
         user: {
           _id: 2,
@@ -51,18 +53,19 @@ const Chat = ({ route, navigation }) => {
         wrapperStyle={{
           left: {
             // Customize the chat bubble wrapper style for received messages
-            backgroundColor: bubbleColor,
+            backgroundColor:bubbleColor,
             borderRadius: 20,
+          
           },
           right: {
             // Customize the chat bubble wrapper style for sent messages
-            backgroundColor: 'aqua',
+            backgroundColor:  'maroon',
             borderRadius: 20,
           }
         }}
         textStyle={{
           // Customize the text style inside the chat bubble
-          color: 'black',
+          color: 'white',
         }}
       />
     );

@@ -19,13 +19,19 @@ const Start = ({ navigation }) => {
     setSelectedColor(color);
 
     if (color === '#090C08') {
+      setBubbleColor('#B9C6AE');
+
+    } else if (color === '#474056') {
+      setBubbleColor('#B9C6AE');
+      
+    }
+    else if (color === '#8A95A5') {
+      setBubbleColor('#B9C6AE');
+    }
+    else if (color === '#B9C6AE') {
       setBubbleColor('#8A95A5');
-    } else if (color === '#B9C6AE') {
-      setBubbleColor('#474056');
     }
-    else if (color === '#474056') {
-      setBubbleColor('#090C08');
-    }
+
 
     navigation.setOptions({
       headerStyle: { backgroundColor: color },
@@ -107,7 +113,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   interactionbox: {
-    flex: 50,
+    minHeight: 340,
     backgroundColor: 'white',
     marginLeft: '11%',
     marginRight: '11%',
@@ -125,37 +131,38 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginLeft: '11%',
     marginRight: '11%',
+    justifyContent: 'center',
   },
   colorchoose1: {
-    flex: 1,
+
     backgroundColor: '#090C08',
     borderRadius: 50 / 2,
     height: 50,
-    width: '25%',
+    width: 50,
     margin: '2%',
   },
   colorchoose2: {
-    flex: 1,
+    
     backgroundColor: '#474056',
     borderRadius: 50 / 2,
     height: 50,
-    width: '25%',
+    width: 50,
     margin: '2%',
   },
   colorchoose3: {
-    flex: 1,
+   
     backgroundColor: '#8A95A5',
     borderRadius: 50 / 2,
     height: 50,
-    width: '25%',
+    width: 50,
     margin: '2%',
   },
   colorchoose4: {
-    flex: 1,
+    
     backgroundColor: '#B9C6AE',
     borderRadius: 50 / 2,
     height: 50,
-    width: '25%',
+    width: 50,
     margin: '2%',
   },
   textInput: {
