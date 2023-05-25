@@ -1,3 +1,5 @@
+
+
 import React, { useState } from 'react';
 import {
   StyleSheet,
@@ -10,14 +12,22 @@ import {
   Platform,
 } from 'react-native';
 
+ 
+
 const Start = ({ navigation }) => {
   const [name, setName] = useState('');
+
+   //State variable selectedColor using the useState hook. It will hold the selected background color
   const [selectedColor, setSelectedColor] = useState('');
+
+  //State variable bubbleColor using the useState hook. It will hold the selected text color
   const [bubbleColor, setBubbleColor] = useState('#FFFFFF'); // Default text color
 
+  //Define a handleColorSelection function which will be used to update the selectedColor state variable when a color is selected.
   const handleColorSelection = (color) => {
     setSelectedColor(color);
 
+    //Update the bubbleColor state variable based on the selected color.
     if (color === '#090C08') {
       setBubbleColor('#B9C6AE');
 
@@ -32,7 +42,7 @@ const Start = ({ navigation }) => {
       setBubbleColor('#8A95A5');
     }
 
-
+//Update the navigation header style and text color based on the selected color.
     navigation.setOptions({
       headerStyle: { backgroundColor: color },
       headerTintColor: bubbleColor,
@@ -40,6 +50,7 @@ const Start = ({ navigation }) => {
   };
 
   return (
+    //Define the Start component which accepts navigation as a prop.
     <View style={styles.container}>
       <ImageBackground source={require('../assets/BackgroundImage.png')} style={styles.backgroundimage} />
 
@@ -47,6 +58,7 @@ const Start = ({ navigation }) => {
         <Text style={styles.title}>Fabis Chat App</Text>
       </View>
 
+     {/*Define the interactionbox which will contain the TextInput, color selection options, and the Start Chatting button.*/}
       <View style={styles.interactionbox}>
         <TextInput
           style={styles.textInput}
@@ -57,6 +69,8 @@ const Start = ({ navigation }) => {
 
         <View style={styles.colorchoosewrapper}>
           <Text style={styles.text2}>Choose Background Color:</Text>
+
+          {/*Define the colorchoosebox which will contain the color selection options.*/}
 
           <View style={styles.colorchoosebox}>
             <TouchableOpacity
@@ -78,6 +92,8 @@ const Start = ({ navigation }) => {
           </View>
         </View>
 
+
+        {/*Define the Start Chatting button which will navigate to the Chat screen when pressed and pass name, color and bubbleColor as props*/}
         <View style={styles.confirmationbutton}>
           <TouchableOpacity
             onPress={() =>
@@ -95,6 +111,7 @@ const Start = ({ navigation }) => {
   );
 };
 
+{/*Define the styles for the Start component.*/ }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
