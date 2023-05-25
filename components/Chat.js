@@ -3,7 +3,7 @@ import { StyleSheet, View, KeyboardAvoidingView, Platform  } from 'react-native'
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 
 const Chat = ({ route, navigation }) => {
-  const { name, color } = route.params;
+  const { name, color, bubbleColor } = route.params;
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
@@ -51,7 +51,7 @@ const Chat = ({ route, navigation }) => {
         wrapperStyle={{
           left: {
             // Customize the chat bubble wrapper style for received messages
-            backgroundColor: 'grey',
+            backgroundColor: bubbleColor,
             borderRadius: 20,
           },
           right: {
