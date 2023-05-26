@@ -105,8 +105,9 @@ const Start = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        {Platform.OS === 'ios' ? <KeyboardAvoidingView behavior='padding' /> : null}
+       
       </View>
+      {Platform.OS === 'ios' ? <KeyboardAvoidingView behavior='padding' /> : null}
     </View>
   );
 };
