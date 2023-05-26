@@ -26,26 +26,30 @@ const Start = ({ navigation }) => {
   //Define a handleColorSelection function which will be used to update the selectedColor state variable when a color is selected.
   const handleColorSelection = (color) => {
     setSelectedColor(color);
+    let newBubbleColor
 
     //Update the bubbleColor state variable based on the selected color.
     if (color === '#090C08') {
+      newBubbleColor = '#B9C6AE';
       setBubbleColor('#B9C6AE');
 
     } else if (color === '#474056') {
+      newBubbleColor = '#B9C6AE'
       setBubbleColor('#B9C6AE');
-      
+
     }
     else if (color === '#8A95A5') {
+      newBubbleColor = '#B9C6AE'
       setBubbleColor('#B9C6AE');
     }
     else if (color === '#B9C6AE') {
+      newBubbleColor = '#8A95A5'
       setBubbleColor('#8A95A5');
     }
-
 //Update the navigation header style and text color based on the selected color.
     navigation.setOptions({
       headerStyle: { backgroundColor: color },
-      headerTintColor: bubbleColor,
+      headerTintColor: newBubbleColor,
     });
   };
 
