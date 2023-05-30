@@ -1,4 +1,4 @@
-
+import { getAuth, signInAnonymously } from "firebase/auth";
 
 import React, { useState } from 'react';
 import {
@@ -10,12 +10,38 @@ import {
   ImageBackground,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from 'react-native';
 
  
 
 const Start = ({ navigation }) => {
+
+  //Define the name state variable using the useState hook. It will hold the username entered by the user.
   const [name, setName] = useState('');
+
+  // Initialize Firebase Authentication
+  const auth = getAuth();
+
+
+//Define the signInUser function which will be used to sign in the user anonymously.
+  const signInUser = () => {
+    signInAnonymously(auth)
+      .then(result => {
+        navigation.navigate("Chat", {
+          userID: result.user.uid,
+       
+         });
+         Alert.alert("Signed in Successfully!");
+          })
+          .catch((error) => {
+            Alert.alert("Unable to sign in, try later again.");
+          })
+      
+     
+  }
+
+  
 
    //State variable selectedColor using the useState hook. It will hold the selected background color
   const [selectedColor, setSelectedColor] = useState('');
@@ -100,9 +126,11 @@ const Start = ({ navigation }) => {
         {/*Define the Start Chatting button which will navigate to the Chat screen when pressed and pass name, color and bubbleColor as props*/}
         <View style={styles.confirmationbutton}>
           <TouchableOpacity
-            onPress={() =>
+            onPress=  {()  =>{
+              signInUser();
               navigation.navigate('Chat', { name: name, color: selectedColor, bubbleColor: bubbleColor })
-            }
+            }}
+         
             disabled={!name || !selectedColor}
           >
             <Text style={styles.text1}>Start Chatting</Text>
