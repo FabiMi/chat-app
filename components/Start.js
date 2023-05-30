@@ -36,8 +36,9 @@ const Start = ({ navigation }) => {
       .then(result => {
         navigation.navigate("Chat", {
           userID: result.user.uid,
-          name: name,
-          backgroundColor: color,
+          name: name, 
+          color: selectedColor, 
+          bubbleColor: bubbleColor
        
          });
          Alert.alert("Signed in Successfully!");
