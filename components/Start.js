@@ -20,6 +20,12 @@ const Start = ({ navigation }) => {
   //Define the name state variable using the useState hook. It will hold the username entered by the user.
   const [name, setName] = useState('');
 
+  //State variable selectedColor using the useState hook. It will hold the selected background color
+  const [selectedColor, setSelectedColor] = useState('');
+
+  //State variable bubbleColor using the useState hook. It will hold the selected text color
+  const [bubbleColor, setBubbleColor] = useState('#FFFFFF'); // Default text color
+
   // Initialize Firebase Authentication
   const auth = getAuth();
 
@@ -30,6 +36,8 @@ const Start = ({ navigation }) => {
       .then(result => {
         navigation.navigate("Chat", {
           userID: result.user.uid,
+          name: name,
+          backgroundColor: color,
        
          });
          Alert.alert("Signed in Successfully!");
@@ -43,11 +51,7 @@ const Start = ({ navigation }) => {
 
   
 
-   //State variable selectedColor using the useState hook. It will hold the selected background color
-  const [selectedColor, setSelectedColor] = useState('');
-
-  //State variable bubbleColor using the useState hook. It will hold the selected text color
-  const [bubbleColor, setBubbleColor] = useState('#FFFFFF'); // Default text color
+   
 
   //Define a handleColorSelection function which will be used to update the selectedColor state variable when a color is selected.
   const handleColorSelection = (color) => {
@@ -127,8 +131,7 @@ const Start = ({ navigation }) => {
         <View style={styles.confirmationbutton}>
           <TouchableOpacity
             onPress=  {()  =>{
-              signInUser();
-              navigation.navigate('Chat', { name: name, color: selectedColor, bubbleColor: bubbleColor })
+               signInUser()
             }}
          
             disabled={!name || !selectedColor}
