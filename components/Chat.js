@@ -1,45 +1,53 @@
+
+//Importing the necessary libraries and components
 import React, { useEffect, useState } from 'react';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
-import { StyleSheet, View, TextInput, KeyboardAvoidingView, TouchableOpacity, Alert, Platform } from 'react-native';
-import { collection, addDoc, onSnapshot, query, orderBy, where,  } from 'firebase/firestore';
+import { StyleSheet, View,  KeyboardAvoidingView,  Platform } from 'react-native';
+import { collection, addDoc, onSnapshot, query, orderBy, where } from 'firebase/firestore';
 
 
-
-// Define the Chat component which will be the screen where the user will be able to send and receive messages.
+//Define the Chat component which will be the main component of the app.
 const Chat = ({ route, navigation, db }) => {
+  const { userID, name, color, bubbleColor } = route.params;
+  const [messages, setMessages] = useState([]);
 
-
-  
-  const { userID, name, color, bubbleColor } = route.params;   // Destructure the route.params object to get the uid, name, color and bubbleColor values passed from the Start component.  
-  const [messages, setMessages] = useState([]);// Define the messages state variable using the useState hook. It will hold the messages sent and received by the user.
-
-
-// Define the addMessage function which will be used to add a new message to the messages collection in Cloud Firestore.  
+  // Define the addMessage function which will be used to add messages to the database.
   const addMessage = async (newMessages) => {
     try {
+
+    // Loop through the new messages and add them to the database
       for (const message of newMessages) {
-        console.log(message);
-        const newMessageRef = await addDoc(collection(db, "messages"), message);
-        if (!newMessageRef.id) {
-          Alert.alert("Unable to send message. Please try again later.");
-        }
+
+
+        const { user } = message;
+
+        // Create the system log message
+        const systemLogMessage = {
+          _id: Math.random().toString(),
+          text: `Message sent by ${user.name} at ${new Date().toLocaleTimeString()}`,
+          createdAt: new Date(),
+          system: true,
+        };
+
+        // Add the user message and system log message to the database
+        await Promise.all([
+          addDoc(collection(db, 'messages'), message),
+          addDoc(collection(db, 'messages'), systemLogMessage),
+        ]);
       }
     } catch (error) {
       console.error('Error sending message:', error);
     }
   };
-// Define the useEffect hook to update the navigation options with the selected name, color and bubbleColor values.
+//
   useEffect(() => {
     navigation.setOptions({
       title: name,
       headerStyle: { backgroundColor: color },
       headerTintColor: bubbleColor,
     });
-   
   }, []);
 
-
-// Define the useEffect hook to get the messages from Cloud Firestore.  
   useEffect(() => {
     const q = query(collection(db, 'messages'), orderBy('createdAt', 'desc'));
     const unsubMessages = onSnapshot(q, (docs) => {
@@ -59,12 +67,6 @@ const Chat = ({ route, navigation, db }) => {
     };
   }, []);
 
-
-
-
-
-
-// Define the renderBubble function which will be used to customize the appearance of the messages sent and received by the user.
   const renderBubble = (props) => {
     return (
       <Bubble
@@ -86,8 +88,6 @@ const Chat = ({ route, navigation, db }) => {
     );
   };
 
-
-  // Define the renderInputToolbar function which will be used to hide the input toolbar when the user is offline.  
   return (
     <View style={[styles.container, { backgroundColor: color }]}>
       <GiftedChat
