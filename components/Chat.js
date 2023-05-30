@@ -18,6 +18,7 @@ const Chat = ({ route, navigation, db }) => {
   const addMessage = async (newMessages) => {
     try {
       for (const message of newMessages) {
+        console.log(message);
         const newMessageRef = await addDoc(collection(db, "messages"), message);
         if (!newMessageRef.id) {
           Alert.alert("Unable to send message. Please try again later.");
@@ -92,7 +93,7 @@ const Chat = ({ route, navigation, db }) => {
       <GiftedChat
         messages={messages}
         onSend={(messages) => addMessage(messages)}
-        user={{ _id: userID, name }}
+        user={{ _id: userID, name: name }}
         renderBubble={renderBubble}
       />
       {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
