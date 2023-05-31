@@ -1,82 +1,86 @@
-//Import necessary dependencies from the react, react-native, and react-native-gifted-chat libraries.
+//Importing the necessary libraries and components
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, KeyboardAvoidingView, Platform  } from 'react-native';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
+import { StyleSheet, View,  KeyboardAvoidingView,  Platform } from 'react-native';
+import { collection, addDoc, onSnapshot, query, orderBy, where } from 'firebase/firestore';
 
-//Define the Chat component which accepts route and navigation as props.
-const Chat = ({ route, navigation }) => {
 
-  //Destructure the name, color, and bubbleColor from route.params. These values are passed from the Start component.
-  const { name, color, bubbleColor } = route.params;
-
-  //Initialize the messages state variable using the useState hook to an empty array.
+//Define the Chat component which will be the main component of the app.
+const Chat = ({ route, navigation, db }) => {
+  const { userID, name, color, bubbleColor } = route.params;
   const [messages, setMessages] = useState([]);
 
+  // Define the addMessage function which will be used to add messages to the database.
+  const addMessage = async (newMessages) => {
+    try {
 
-//Use the useEffect hook to set options for the navigation header and initialize the messages state with some initial chat messages when the component mounts. 
+    // Loop through the new messages and add them to the database
+      for (const message of newMessages) {
+
+
+        const { user } = message;
+
+        // Create the system log message
+        const systemLogMessage = {
+          _id: Math.random().toString(),
+          text: `Message sent by ${user.name} at ${new Date().toLocaleTimeString()}`,
+          createdAt: new Date(),
+          system: true,
+        };
+
+        // Add the user message and system log message to the database
+        await Promise.all([
+          addDoc(collection(db, 'messages'), message),
+          addDoc(collection(db, 'messages'), systemLogMessage),
+        ]);
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
+  };
+//
   useEffect(() => {
     navigation.setOptions({
       title: name,
       headerStyle: { backgroundColor: color },
       headerTintColor: bubbleColor,
     });
-    setMessages([
-      {
-
-        // Define the initial chat messageusing the setMessages function.
-        _id: 1,
-        text: `Hello ${name}! Welcome to my chat app!`,
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any',
-        },
-      },
-      {
-        // Define the initial sytem message using the setMessages function.
-        _id: 2,
-        text: 'This is a system message',
-        createdAt: new Date(),
-        system: true,
-
-        // Any additional custom parameters (The User) are passed through
-        user: {
-          _id: 1,
-          name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any',
-          createdAt: new Date(),
-          system: true,
-      
-        },
-      },
-    ]);
   }, []);
 
-  //Define the onSend function which will be used to update the messages state with the latest chat messages.
-  const onSend = (newMessages = []) => {
-    setMessages((prevMessages) => GiftedChat.append(prevMessages, newMessages));
-  };
- // Define a renderBubble function to customize the appearance of chat bubbles based on the sender (left or right).
+  useEffect(() => {
+    const q = query(collection(db, 'messages'), orderBy('createdAt', 'desc'));
+    const unsubMessages = onSnapshot(q, (docs) => {
+      let newMessages = [];
+      docs.forEach((doc) => {
+        const data = doc.data();
+        newMessages.push({
+          id: doc.id,
+          ...data,
+          createdAt: data.createdAt ? new Date(data.createdAt.toMillis()) : new Date(),
+        });
+      });
+      setMessages(newMessages);
+    });
+    return () => {
+      if (unsubMessages) unsubMessages();
+    };
+  }, []);
+
   const renderBubble = (props) => {
     return (
       <Bubble
         {...props}
         wrapperStyle={{
           left: {
-            // Customize the chat bubble wrapper style for received messages  
-            backgroundColor:bubbleColor,
+            backgroundColor: bubbleColor,
             borderRadius: 20,
-          
           },
           right: {
-            // Customize the chat bubble wrapper style for sent messages
-            backgroundColor:  'maroon',
+            backgroundColor: 'maroon',
             borderRadius: 20,
-          }
+          },
         }}
         textStyle={{
-          // Customize the text style inside the chat bubble
           color: 'white',
         }}
       />
@@ -84,29 +88,24 @@ const Chat = ({ route, navigation }) => {
   };
 
   return (
-    // Pass the color prop to the container style using the color variable.
     <View style={[styles.container, { backgroundColor: color }]}>
       <GiftedChat
-    // Pass the messages state variable to the gifted chat component  
         messages={messages}
-        onSend={onSend}
-        user={{
-          _id: 1
-        }}
-        renderBubble={renderBubble} // Pass the custom renderBubble function
-      />
-       { Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null }
-      
+        onSend={(messages) => addMessage(messages)}
+        user={{ _id: userID, name: name }}
+        renderBubble={renderBubble}
+        renderUsernameOnMessage={true}
 
+      />
+      {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
     </View>
-    
   );
 };
-// Define the styles for the Chat component.
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    border: "none"
+    border: 'none',
   },
 });
 
