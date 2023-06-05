@@ -57,13 +57,11 @@ const loadCachedMessages = async () => {
 let unsubMessages;
 
 useEffect(() => {
-
-if (isConnected ===true) {
-
-  if (unsubMessages) unsubMessages();
-  unsubMessages = null;
+  if (isConnected === true) {
+    if (unsubMessages) unsubMessages();
+    unsubMessages = null;
     const q = query(collection(db, 'messages'), orderBy('createdAt', 'desc'));
-    const unsubMessages = onSnapshot(q, (docs) => {
+    unsubMessages = onSnapshot(q, (docs) => {
       let newMessages = [];
       docs.forEach((doc) => {
         const data = doc.data();
@@ -72,26 +70,28 @@ if (isConnected ===true) {
           ...data,
           createdAt: data.createdAt ? new Date(data.createdAt.toMillis()) : new Date(),
         });
-        
       });
       cacheMessages(newMessages);
       setMessages(newMessages);
     });
-  } else 
+  } else {
     loadCachedMessages();
+  }
 
-    const cacheMessages = async (messageToCache) => {
-      try {
-        await AsyncStorage.setItem('messages', JSON.stringify(messageToCache));
-      } catch (error) {
-        console.log(error.message);
-      }
+  const cacheMessages = async (messageToCache) => {
+    try {
+      await AsyncStorage.setItem('messages', JSON.stringify(messageToCache));
+    } catch (error) {
+      console.log(error.message);
     }
+  };
 
-    return () => {
-      if (unsubMessages) unsubMessages();
-    };
-  }, [isConnected]);
+
+  return () => {
+    if (unsubMessages) unsubMessages();
+  };
+}, [isConnected]);
+
 
   const renderBubble = (props) => {
     return (
@@ -115,7 +115,7 @@ if (isConnected ===true) {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: color }]}>
+    <View style={[styles.container, {backgroundColor: isConnected ? color : "#AAA"  }]}>
       <GiftedChat
         messages={messages}
         onSend={(messages) => addMessage(messages)}
