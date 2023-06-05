@@ -1,4 +1,5 @@
-//Import necessary dependencies from the react, react-native, and react-native-gifted-chat libraries.
+
+//Importing the necessary libraries and components
 import React, { useEffect, useState } from 'react';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import { StyleSheet, View,  KeyboardAvoidingView,  Platform } from 'react-native';
@@ -91,11 +92,9 @@ const Chat = ({ route, navigation, db }) => {
     <View style={[styles.container, { backgroundColor: color }]}>
       <GiftedChat
         messages={messages}
-        onSend={onSend}
-        user={{
-          _id: 1
-        }}
-        renderBubble={renderBubble} // Pass the custom renderBubble function
+        onSend={(messages) => addMessage(messages)}
+        user={{ _id: userID, name: name }}
+        renderBubble={renderBubble}
       />
       {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
     </View>
