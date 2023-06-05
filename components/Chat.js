@@ -50,11 +50,20 @@ const Chat = ({ route, navigation, db, isConnected }) => {
     });
   }, []);
 
+
+  // Define the useEffect hook to load the messages from the database.
   useEffect(() => {
     if (isConnected === true) {
+
+      // Define the unsubscribe function to stop listening to changes in the database.
       let unsubMessages;
+
+      // Create a query to get the last 20 messages from the database.
       const q = query(collection(db, 'messages'), orderBy('createdAt', 'desc'));
+
+      // Subscribe to the query using the onSnapshot method.
       unsubMessages = onSnapshot(q, (docs) => {
+        // Loop through the snapshot of the documents returned by the query.
         let newMessages = [];
         docs.forEach((doc) => {
           const data = doc.data();
@@ -64,10 +73,11 @@ const Chat = ({ route, navigation, db, isConnected }) => {
             createdAt: data.createdAt ? new Date(data.createdAt.toMillis()) : new Date(),
           });
         });
+        // Cache the messages in AsyncStorage
         cacheMessages(newMessages);
         setMessages(newMessages);
       });
-
+      // Return the unsubscribe function to stop listening to changes in the database.
       return () => {
         if (unsubMessages) unsubMessages();
       };
@@ -76,6 +86,7 @@ const Chat = ({ route, navigation, db, isConnected }) => {
     }
   }, [isConnected]);
 
+  // Define the cacheMessages function which will be used to cache the messages in AsyncStorage.
   const cacheMessages = async (messageToCache) => {
     try {
       await AsyncStorage.setItem('messages', JSON.stringify(messageToCache));
@@ -83,7 +94,7 @@ const Chat = ({ route, navigation, db, isConnected }) => {
       console.log(error.message);
     }
   };
-
+ // renderBubble function to customize the chat bubble
   const renderBubble = (props) => {
     return (
       <Bubble
@@ -104,7 +115,7 @@ const Chat = ({ route, navigation, db, isConnected }) => {
       />
     );
   };
-
+ // renderSend function to customize the send button and disable it when the user is offline 
   const renderSend = (props) => {
     if (!isConnected) {
       return (
@@ -116,7 +127,7 @@ const Chat = ({ route, navigation, db, isConnected }) => {
 
    
   };
-
+// Return the GiftedChat component with the required props.
   return (
     <View style={[styles.container, { backgroundColor: color }]}>
       <GiftedChat
@@ -132,20 +143,14 @@ const Chat = ({ route, navigation, db, isConnected }) => {
     </View>
   );
 };
-
+// Define the styles for the Chat component.
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     border: 'none',
   },
 
-  sendContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 10,
-    marginBottom: 5,
-    backgroundColor: 'blue',
-  },
+  
 
   disabledSendButton: {
     color: 'gray',
