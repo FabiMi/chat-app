@@ -1,28 +1,25 @@
-//Importing the necessary libraries and components
+// Importing the necessary libraries and components
 import React, { useEffect, useState } from 'react';
-import { GiftedChat, Bubble } from 'react-native-gifted-chat';
-import { StyleSheet, View,  KeyboardAvoidingView,  Platform } from 'react-native';
-import { collection, addDoc, onSnapshot, query, orderBy, where } from 'firebase/firestore';
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { GiftedChat, Bubble, Send } from 'react-native-gifted-chat';
+import { StyleSheet, View, KeyboardAvoidingView, Platform, Text } from 'react-native';
+import { collection, addDoc, onSnapshot, query, orderBy } from 'firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-//Define the Chat component which will be the main component of the app.
+// Define the Chat component which will be the main component of the app.
 const Chat = ({ route, navigation, db, isConnected }) => {
   const { userID, name, color, bubbleColor } = route.params;
   const [messages, setMessages] = useState([]);
 
-const loadCachedMessages = async () => {  
-  const cachedMessages = await AsyncStorage.getItem('messages');
-  SectionList(JSON.parse(cachedMessages));
-}
+  const loadCachedMessages = async () => {
+    const cachedMessages = await AsyncStorage.getItem('messages');
+    setMessages(JSON.parse(cachedMessages));
+  };
 
   // Define the addMessage function which will be used to add messages to the database.
   const addMessage = async (newMessages) => {
     try {
-
-    // Loop through the new messages and add them to the database
+      // Loop through the new messages and add them to the database
       for (const message of newMessages) {
-
-
         const { user } = message;
 
         // Create the system log message
@@ -43,7 +40,8 @@ const loadCachedMessages = async () => {
       console.error('Error sending message:', error);
     }
   };
-// Define the useEffect hook to set the title of the screen and the header styles.
+
+  // Define the useEffect hook to set the title of the screen and the header styles.
   useEffect(() => {
     navigation.setOptions({
       title: name,
@@ -51,32 +49,32 @@ const loadCachedMessages = async () => {
       headerTintColor: bubbleColor,
     });
   }, []);
-// Define the useEffect hook to get the messages from the database.
 
-
-let unsubMessages;
-
-useEffect(() => {
-  if (isConnected === true) {
-    if (unsubMessages) unsubMessages();
-    unsubMessages = null;
-    const q = query(collection(db, 'messages'), orderBy('createdAt', 'desc'));
-    unsubMessages = onSnapshot(q, (docs) => {
-      let newMessages = [];
-      docs.forEach((doc) => {
-        const data = doc.data();
-        newMessages.push({
-          id: doc.id,
-          ...data,
-          createdAt: data.createdAt ? new Date(data.createdAt.toMillis()) : new Date(),
+  useEffect(() => {
+    if (isConnected === true) {
+      let unsubMessages;
+      const q = query(collection(db, 'messages'), orderBy('createdAt', 'desc'));
+      unsubMessages = onSnapshot(q, (docs) => {
+        let newMessages = [];
+        docs.forEach((doc) => {
+          const data = doc.data();
+          newMessages.push({
+            _id: doc.id,
+            ...data,
+            createdAt: data.createdAt ? new Date(data.createdAt.toMillis()) : new Date(),
+          });
         });
+        cacheMessages(newMessages);
+        setMessages(newMessages);
       });
-      cacheMessages(newMessages);
-      setMessages(newMessages);
-    });
-  } else {
-    loadCachedMessages();
-  }
+
+      return () => {
+        if (unsubMessages) unsubMessages();
+      };
+    } else {
+      loadCachedMessages();
+    }
+  }, [isConnected]);
 
   const cacheMessages = async (messageToCache) => {
     try {
@@ -85,13 +83,6 @@ useEffect(() => {
       console.log(error.message);
     }
   };
-
-
-  return () => {
-    if (unsubMessages) unsubMessages();
-  };
-}, [isConnected]);
-
 
   const renderBubble = (props) => {
     return (
@@ -114,15 +105,28 @@ useEffect(() => {
     );
   };
 
+  const renderSend = (props) => {
+    if (!isConnected) {
+      return (
+        <Send {...props} disabled={true}>
+          <Text style = {styles.disabledSendButton} >Unable to send now</Text>
+        </Send>
+      );
+    }
+
+   
+  };
+
   return (
-    <View style={[styles.container, {backgroundColor: isConnected ? color : "#AAA"  }]}>
+    <View style={[styles.container, { backgroundColor: color }]}>
       <GiftedChat
         messages={messages}
-        onSend={(messages) => addMessage(messages)}
+        onSend={addMessage}
         user={{ _id: userID, name: name }}
         renderBubble={renderBubble}
         renderUsernameOnMessage={true}
-
+        renderSend={renderSend}
+        alwaysShowSend={true}
       />
       {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
     </View>
@@ -133,6 +137,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     border: 'none',
+  },
+
+  sendContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+    marginBottom: 5,
+    backgroundColor: 'blue',
+  },
+
+  disabledSendButton: {
+    color: 'gray',
+    justifyContent: 'center',
+    alignItems: 'center',
+
+   
   },
 });
 
