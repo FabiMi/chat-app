@@ -1,5 +1,4 @@
 import { getAuth, signInAnonymously } from "firebase/auth";
-
 import React, { useState } from 'react';
 import {
   StyleSheet,
@@ -135,7 +134,7 @@ const Start = ({ navigation }) => {
                signInUser()
             }}
          
-            disabled={!name || !selectedColor}
+            disabled={!name || !selectedColor} 
           >
             <Text style={styles.text1}>Start Chatting</Text>
           </TouchableOpacity>
