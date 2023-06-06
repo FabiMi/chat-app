@@ -1,6 +1,6 @@
 // Importing the necessary libraries and components
 import React, { useEffect, useState } from 'react';
-import { GiftedChat, Bubble, Send } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, Send, Composer } from 'react-native-gifted-chat';
 import { StyleSheet, View, KeyboardAvoidingView, Platform, Text } from 'react-native';
 import { collection, addDoc, onSnapshot, query, orderBy } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -116,17 +116,27 @@ const Chat = ({ route, navigation, db, isConnected }) => {
     );
   };
  // renderSend function to customize the send button and disable it when the user is offline 
-  const renderSend = (props) => {
-    if (!isConnected) {
-      return (
-        <Send {...props} disabled={true}>
-          <Text style = {styles.disabledSendButton} >Unable to send now</Text>
-        </Send>
-      );
-    }
+ const renderSend = (props) => {
+  return (
+    <Send {...props} disabled={!isConnected}>
+      {!isConnected ?
+        <Text style={styles.disabledSendButton} >X</Text>
+        : null}
+    </Send>
+  );
+}
 
-   
-  };
+
+  const renderComposer = (props) => {
+    return (
+      <Composer
+        {...props}
+        disableComposer={!isConnected}
+        placeholder={isConnected ? "Type a message" : "App is currently in offline mode"}
+      />
+    );
+  }
+
 // Return the GiftedChat component with the required props.
   return (
     <View style={[styles.container, { backgroundColor: color }]}>
@@ -138,6 +148,7 @@ const Chat = ({ route, navigation, db, isConnected }) => {
         renderUsernameOnMessage={true}
         renderSend={renderSend}
         alwaysShowSend={true}
+        renderComposer={renderComposer}
       />
       {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
     </View>
@@ -154,8 +165,8 @@ const styles = StyleSheet.create({
 
   disabledSendButton: {
     color: 'gray',
-    justifyContent: 'center',
-    alignItems: 'center',
+    lineHeight: 43,
+    paddingRight: 10,
 
    
   },
