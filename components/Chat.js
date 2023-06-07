@@ -4,9 +4,12 @@ import { GiftedChat, Bubble, Send, Composer } from 'react-native-gifted-chat';
 import { StyleSheet, View, KeyboardAvoidingView, Platform, Text } from 'react-native';
 import { collection, addDoc, onSnapshot, query, orderBy } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomActions from './CustomActions';
+
 
 // Define the Chat component which will be the main component of the app.
 const Chat = ({ route, navigation, db, isConnected }) => {
+
   const { userID, name, color, bubbleColor } = route.params;
   const [messages, setMessages] = useState([]);
 
@@ -126,7 +129,6 @@ const Chat = ({ route, navigation, db, isConnected }) => {
   );
 }
 
-
   const renderComposer = (props) => {
     return (
       <Composer
@@ -136,6 +138,12 @@ const Chat = ({ route, navigation, db, isConnected }) => {
       />
     );
   }
+
+
+  const renderCustomActions = (props) => {
+    return <CustomActions {...props} />;
+  };
+
 
 // Return the GiftedChat component with the required props.
   return (
@@ -149,6 +157,7 @@ const Chat = ({ route, navigation, db, isConnected }) => {
         renderSend={renderSend}
         alwaysShowSend={true}
         renderComposer={renderComposer}
+        renderActions={renderCustomActions}
       />
       {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
     </View>
