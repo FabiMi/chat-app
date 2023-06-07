@@ -1,7 +1,7 @@
 // Importing the necessary libraries and components
 import React, { useEffect, useState } from 'react';
 import { GiftedChat, Bubble, Send, Composer } from 'react-native-gifted-chat';
-import { StyleSheet, View, KeyboardAvoidingView, Platform, Text } from 'react-native';
+import { StyleSheet, View, KeyboardAvoidingView, Platform, Text, MapView } from 'react-native';
 import { collection, addDoc, onSnapshot, query, orderBy } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomActions from './CustomActions';
@@ -144,6 +144,26 @@ const Chat = ({ route, navigation, db, isConnected }) => {
     return <CustomActions {...props} />;
   };
 
+  const renderCustomView = (props) => {
+    const { currentMessage} = props;
+    if (currentMessage.location) {
+      return (
+          <MapView
+            style={{width: 150,
+              height: 100,
+              borderRadius: 13,
+              margin: 3}}
+            region={{
+              latitude: currentMessage.location.latitude,
+              longitude: currentMessage.location.longitude,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }}
+          />
+      );
+    }
+    return null;
+  }
 
 // Return the GiftedChat component with the required props.
   return (
@@ -158,6 +178,7 @@ const Chat = ({ route, navigation, db, isConnected }) => {
         alwaysShowSend={true}
         renderComposer={renderComposer}
         renderActions={renderCustomActions}
+        renderCustomView={renderCustomView}
       />
       {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
     </View>
