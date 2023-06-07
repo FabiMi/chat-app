@@ -1,7 +1,10 @@
 import { TouchableOpacity, Text, View, StyleSheet } from "react-native";
 import { useActionSheet } from '@expo/react-native-action-sheet';
+import * as ImagePicker from 'expo-image-picker';
+
 
 const CustomActions = ({wrapperStyle, iconTextStyle}) => {
+
     const actionSheet = useActionSheet();
     const onActionPress = () => {
         const options = ['Choose From Library', 'Take Picture', 'Send Location', 'Cancel'];
@@ -14,7 +17,7 @@ const CustomActions = ({wrapperStyle, iconTextStyle}) => {
           async (buttonIndex) => {
             switch (buttonIndex) {
               case 0:
-                console.log('user wants to pick an image');
+                pickImage();
                 return;
               case 1:
                 console.log('user wants to take a photo');
@@ -27,6 +30,20 @@ const CustomActions = ({wrapperStyle, iconTextStyle}) => {
         );
       };
 
+
+      const pickImage = async () => {
+        let permissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    
+        if (permissions?.granted) {
+           let result = await ImagePicker.launchImageLibraryAsync();
+    
+          if (!result.canceled) setImage(result.assets[0]);
+          else setImage(null)
+        }
+      }
+
+      
+    
 
 
   return (
