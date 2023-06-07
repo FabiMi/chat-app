@@ -1,6 +1,8 @@
 import { TouchableOpacity, Text, View, StyleSheet } from "react-native";
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import * as ImagePicker from 'expo-image-picker';
+import * as Location from 'expo-location';
+import MapView from 'react-native-maps';
 
 
 const CustomActions = ({wrapperStyle, iconTextStyle}) => {
@@ -20,10 +22,10 @@ const CustomActions = ({wrapperStyle, iconTextStyle}) => {
                 pickImage();
                 return;
               case 1:
-                console.log('user wants to take a photo');
+                takePhoto();
                 return;
               case 2:
-                console.log('user wants to get their location');
+                getLocation();  
               default:
             }
           },
@@ -42,7 +44,29 @@ const CustomActions = ({wrapperStyle, iconTextStyle}) => {
         }
       }
 
-      
+      const takePhoto = async () => {
+        let permissions = await ImagePicker.requestCameraPermissionsAsync();
+    
+        if (permissions?.granted) {
+          let result = await ImagePicker.launchCameraAsync();
+    
+          if (!result.canceled) setImage(result.assets[0]);
+          else setImage(null)
+        }
+      }
+
+      const getLocation = async () => {
+        let permissions = await Location.requestForegroundPermissionsAsync();
+    
+        if (permissions?.granted) {
+          const location = await Location.getCurrentPositionAsync({});
+          setLocation(location);
+        } else {
+          Alert.alert("Permissions to read location aren't granted");
+        }
+      }
+
+
     
 
 
