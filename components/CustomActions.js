@@ -5,7 +5,7 @@ import * as Location from 'expo-location';
 import MapView from 'react-native-maps';
 
 
-const CustomActions = ({wrapperStyle, iconTextStyle}) => {
+const CustomActions = ({wrapperStyle, iconTextStyle, onSend}) => {
 
     const actionSheet = useActionSheet();
     const onActionPress = () => {
@@ -57,14 +57,19 @@ const CustomActions = ({wrapperStyle, iconTextStyle}) => {
 
       const getLocation = async () => {
         let permissions = await Location.requestForegroundPermissionsAsync();
-    
         if (permissions?.granted) {
           const location = await Location.getCurrentPositionAsync({});
-          setLocation(location);
-        } else {
-          Alert.alert("Permissions to read location aren't granted");
-        }
+          if (location) {
+            onSend({
+              location: {
+                longitude: location.coords.longitude,
+                latitude: location.coords.latitude,
+              },
+            });
+          } else Alert.alert("Error occurred while fetching location");
+        } else Alert.alert("Permissions haven't been granted.");
       }
+      
 
 
     
