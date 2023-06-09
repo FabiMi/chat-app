@@ -1,3 +1,4 @@
+// import the necessary lybraries and components
 import { TouchableOpacity, Text, View, StyleSheet,  } from "react-native";
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import * as ImagePicker from 'expo-image-picker';
@@ -20,6 +21,7 @@ const CustomActions = ({wrapperStyle, iconTextStyle, onSend, storage, userID}) =
             options,
             cancelButtonIndex,
           },
+          // Define the buttonIndex function which will be used to determine which option the user has selected.
           async (buttonIndex) => {
             switch (buttonIndex) {
               case 0:
@@ -62,7 +64,7 @@ const CustomActions = ({wrapperStyle, iconTextStyle, onSend, storage, userID}) =
               // Convert the image to a blob
               const blob = await response.blob();
               const newUploadRef = ref(storage, uniqueRefString);
-              // Upload the image to the database
+              // Upload the image to the firebase storage
               uploadBytes(newUploadRef, blob).then(async (snapshot) => {
                 console.log('file has been uploaded');
                 // Get the image URL for the image that was just uploaded
@@ -96,7 +98,7 @@ const CustomActions = ({wrapperStyle, iconTextStyle, onSend, storage, userID}) =
             // Convert the image to a blob
             const blob = await response.blob();
             const newUploadRef = ref(storage, uniqueRefString);
-            // Upload the image to the database
+            // Upload the image to firebase
             uploadBytes(newUploadRef, blob).then(async (snapshot) => {
               console.log('file has been uploaded');
               // Get the image URL for the image that was just uploaded
@@ -113,8 +115,10 @@ const CustomActions = ({wrapperStyle, iconTextStyle, onSend, storage, userID}) =
       const getLocation = async () => {
         let permissions = await Location.requestForegroundPermissionsAsync();
         if (permissions?.granted) {
+          // Get the user's location
           const location = await Location.getCurrentPositionAsync({});
           if (location) {
+            // Send the location to the onSend function
             onSend({
               location: {
                 longitude: location.coords.longitude,
@@ -129,8 +133,9 @@ const CustomActions = ({wrapperStyle, iconTextStyle, onSend, storage, userID}) =
 
     
 
-
+// Return the CustomActions component
   return (
+    // Define the TouchableOpacity component which will be used to wrap the action button.
     <TouchableOpacity style={styles.container} onPress={onActionPress}> 
     <View style={[styles.wrapper, wrapperStyle]}>
         <Text style={[styles.iconText, iconTextStyle]}>+</Text>
@@ -140,7 +145,7 @@ const CustomActions = ({wrapperStyle, iconTextStyle, onSend, storage, userID}) =
 }
 
 
-
+// Define the styles for the CustomActions component.
 const styles = StyleSheet.create({
     container: {
       width: 26,
