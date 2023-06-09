@@ -1,14 +1,15 @@
 // Importing the necessary libraries and components
 import React, { useEffect, useState } from 'react';
 import { GiftedChat, Bubble, Send, Composer } from 'react-native-gifted-chat';
-import { StyleSheet, View, KeyboardAvoidingView, Platform, Text, MapView } from 'react-native';
+import { StyleSheet, View, KeyboardAvoidingView, Platform, Text} from 'react-native';
 import { collection, addDoc, onSnapshot, query, orderBy } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomActions from './CustomActions';
+import MapView from 'react-native-maps';
 
 
 // Define the Chat component which will be the main component of the app.
-const Chat = ({ route, navigation, db, isConnected }) => {
+const Chat = ({ route, navigation, db, isConnected, storage }) => {
 
   const { userID, name, color, bubbleColor } = route.params;
   const [messages, setMessages] = useState([]);
@@ -141,7 +142,7 @@ const Chat = ({ route, navigation, db, isConnected }) => {
 
 
   const renderCustomActions = (props) => {
-    return <CustomActions {...props} />;
+    return <CustomActions storage={storage} {...props} />;
   };
 
   const renderCustomView = (props) => {

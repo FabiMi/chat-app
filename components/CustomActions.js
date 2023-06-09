@@ -1,12 +1,16 @@
-import { TouchableOpacity, Text, View, StyleSheet, } from "react-native";
+import { TouchableOpacity, Text, View, StyleSheet,  } from "react-native";
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
-import MapView from 'react-native-maps';
+import { ref,getDownloadURL, uploadBytes } from 'firebase/storage';
 
 
-const CustomActions = ({wrapperStyle, iconTextStyle, onSend}) => {
+// Define the CustomActions component which will be used to add the action button to the message input field.
 
+
+const CustomActions = ({wrapperStyle, iconTextStyle, onSend, storage, userID}) => {
+
+  // Define the onActionPress function which will be used to display the action sheet when the action button is pressed.
     const actionSheet = useActionSheet();
     const onActionPress = () => {
         const options = ['Choose From Library', 'Take Picture', 'Send Location', 'Cancel'];
@@ -31,32 +35,81 @@ const CustomActions = ({wrapperStyle, iconTextStyle, onSend}) => {
           },
         );
       };
-
-
-      const pickImage = async () => {
-        let permissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    
-        if (permissions?.granted) {
-           let result = await ImagePicker.launchImageLibraryAsync();
-    
-          if (!result.canceled) {
-            console.log('uploading and uploading the image occurs here');
-          } else Alert.alert("Permissions haven't been granted.");
-        }
+      // Define the generateReference function which will be used to generate a unique name for the image.
+      const generateReference = (uri) => {
+        const timeStamp = (new Date()).getTime();
+        const imageName = uri.split("/")[uri.split("/").length - 1];
+        return `${userID}-${timeStamp}-${imageName}`;
       }
+        // Define the pickImage function which will be used to pick an image from the device's library.
+        const pickImage = async () => {
+          let permissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
+          // Check if the user has granted permission to access the device's library
+          if (permissions?.granted) {
+            let result = await ImagePicker.launchImageLibraryAsync();
+
+            // Check if the user has picked an image
+
+            // Upload the image to the database
+            if (!result.canceled) {
+
+              // Get the image URI
+              const imageURI = result.assets[0].uri;
+              const uniqueRefString = generateReference(imageURI);
+              const response = await fetch(imageURI);
+
+              // Convert the image to a blob
+              const blob = await response.blob();
+              const newUploadRef = ref(storage, uniqueRefString);
+              // Upload the image to the database
+              uploadBytes(newUploadRef, blob).then(async (snapshot) => {
+                console.log('file has been uploaded');
+                // Get the image URL for the image that was just uploaded
+                const imageURL = await getDownloadURL(snapshot.ref)
+                // Send the image URL to the onSend function
+                onSend({ image: imageURL });
+              })
+            }
+            // Alert the user didnt consent to the permissions
+            else Alert.alert("Permissions haven't been granted.");
+          }
+        }
+      
+
+     
+        // Define the takePhoto function which will be used to take a photo using the device's camera.
       const takePhoto = async () => {
         let permissions = await ImagePicker.requestCameraPermissionsAsync();
-    
+
+    // Check if the user has granted permission to access the device's camera
         if (permissions?.granted) {
           let result = await ImagePicker.launchCameraAsync();
-    
+          // Check if the user has taken a photo
           if (!result.canceled) {
-            console.log('uploading and uploading the image occurs here');
-          } else Alert.alert("Permissions haven't been granted.");
+
+            // Get the image URI
+            const imageURI = result.assets[0].uri;
+            const uniqueRefString = generateReference(imageURI);
+            const response = await fetch(imageURI);
+
+            // Convert the image to a blob
+            const blob = await response.blob();
+            const newUploadRef = ref(storage, uniqueRefString);
+            // Upload the image to the database
+            uploadBytes(newUploadRef, blob).then(async (snapshot) => {
+              console.log('file has been uploaded');
+              // Get the image URL for the image that was just uploaded
+              const imageURL = await getDownloadURL(snapshot.ref)
+              // Send the image URL to the onSend function
+              onSend({ image: imageURL });
+            })
+          }
+          // Alert the user didnt consent to the permissions
+          else Alert.alert("Permissions haven't been granted.");
         }
       }
-
+      // Define the getLocation function which will be used to get the user's location.
       const getLocation = async () => {
         let permissions = await Location.requestForegroundPermissionsAsync();
         if (permissions?.granted) {
