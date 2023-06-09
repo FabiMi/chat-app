@@ -16,7 +16,7 @@ Installation
 
 To run the chat application, please follow these steps:
 
-1. Clone the Repository : git clone <repository-url>
+1. Clone the Repository : git clone <https://github.com/FabiMi/chat-app/tree/main>
 
 
 2.Install the dependencies
