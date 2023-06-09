@@ -1,5 +1,6 @@
 import Start from './components/Start';
 import Chat from './components/Chat';
+import { getStorage } from "firebase/storage";
 
 // import react Navigation
 import { NavigationContainer } from '@react-navigation/native';
@@ -41,6 +42,9 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
+//Initialize Firebase Storage for images
+const storage = getStorage(app);
+
 //Create the App component which will be the root component of the app.
 
 LogBox.ignoreLogs(["AsyncStorage has been extracted from"]);
@@ -77,7 +81,7 @@ const db = getFirestore(app);
         <Stack.Screen
           name="Chat"
          
-        >{props => <Chat isConnected={connectionStatus.isConnected}  db={db} {...props} />}
+        >{props => <Chat isConnected={connectionStatus.isConnected}  db={db}  storage={storage} {...props} />}
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
