@@ -140,15 +140,16 @@ const Chat = ({ route, navigation, db, isConnected, storage }) => {
     );
   }
 
-
+  // renderCustomActions function to customize the action button
   const renderCustomActions = (props) => {
     return <CustomActions storage={storage} {...props} />;
   };
-
+// renderCustomView function to customize the map view
   const renderCustomView = (props) => {
     const { currentMessage} = props;
     if (currentMessage.location) {
       return (
+        // Display the map view with the location data passed to it.
           <MapView
             style={{width: 150,
               height: 100,
@@ -190,8 +191,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     border: 'none',
+    marginbuttom: 3,
   },
 
+  
   
 
   disabledSendButton: {
