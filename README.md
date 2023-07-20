@@ -11,7 +11,7 @@ Caching of messages using AsyncStorage
 Integration with Firebase Firestore for data storage
 Custom actions for sending images and location sharing
 Support for displaying maps for location messages
-
+f
 Installation
 
 To run the chat application, please follow these steps:
