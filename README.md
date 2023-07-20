@@ -66,4 +66,4 @@ firebase: The Firebase JavaScript SDK for integrating with Firebase services.
 
 Contact
 
-If you have any questions or suggestions, please feel free to contact me at fabediesel@googlemail.com
+If you have any questions or suggestions, please feel free to contact me at devfabmi@googlemail.com
