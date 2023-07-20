@@ -41,6 +41,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const connectionStatus = useNetInfo();
 
 //Initialize Firebase Storage for images
 const storage = getStorage(app);
