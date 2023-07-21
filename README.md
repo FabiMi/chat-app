@@ -15,7 +15,7 @@ MyFlixClient is a web application built with React, Redux, and Bootstrap that al
 
 
 
-## How to run locally
+## How to run locally!
 
 Make sure you have Node.js and npm installed on your system.
 Download the repository from GitHub:
