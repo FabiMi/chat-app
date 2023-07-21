@@ -12,7 +12,7 @@ Integration with Firebase Firestore for data storage
 Custom actions for sending images and location sharing
 Support for displaying maps for location messages
 f
-Installation
+Installationeer
 
 To run the chat application, please follow these steps:
 
