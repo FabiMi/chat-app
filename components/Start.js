@@ -22,7 +22,7 @@ const Start = ({ navigation }) => {
   //State variable selectedColor using the useState hook. It will hold the selected background color
   const [selectedColor, setSelectedColor] = useState('');
 
-  //State variable bubbleColor using the useState hook. It will hold the selected text color
+  //State variable buubbleColor using the useState hook. It will hold the selected text color
   const [bubbleColor, setBubbleColor] = useState('#FFFFFF'); // Default text color
 
   // Initialize Firebase Authentication
