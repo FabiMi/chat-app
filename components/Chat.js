@@ -19,7 +19,7 @@ const Chat = ({ route, navigation, db, isConnected, storage }) => {
     setMessages(JSON.parse(cachedMessages));
   };
 
-  // Define the addMessage function which will be used to add messages to the database.
+  // Define the addMessage function whzich will be used to add messages to the database.
   const addMessage = async (newMessages) => {
     try {
       // Loop through the new messages and add them to the database
