@@ -3,6 +3,7 @@
 This is a chat application built with React Native that allows users to send and receive messages in real-time. It utilizes the react-native-gifted-chat library for the chat interface and integrates with Firebase Firestore for message storage and retrieval.
 
 
+
 ![](https://github.com/FabiMi/chat-app/blob/Final1/IMG_7536.PNG)
 ![](https://github.com/FabiMi/chat-app/blob/Final1/IMG_7538.PNG)
 ![](https://github.com/FabiMi/chat-app/blob/Final1/IMG_7539.PNG)
